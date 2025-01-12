@@ -3,7 +3,6 @@ export interface CreateAssessmentDto {
 	description: string;
 	grade: number;
 	studentId: string;
-	student: { id: string; type: string };
 }
 
 export interface UpdateAssessmentDto {

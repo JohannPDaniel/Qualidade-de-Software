@@ -5,19 +5,18 @@ import { AssessmentService } from '../service/assement.service';
 export class AssessmentController {
 	public static async create(req: Request, res: Response): Promise<void> {
 		try {
-			const { title, description, grade, student } = req.body;
-			const studentId = req.headers['x-student-id'] as string;
+			const { title, description, grade, studentId } = req.body;
+			const studentLogged = req.authStudent;
 
 			const data: CreateAssessmentDto = {
 				title,
 				description,
 				grade,
 				studentId,
-				student,
 			};
 
 			const service = new AssessmentService();
-			const result = await service.create(data);
+			const result = await service.create(data, studentLogged);
 
 			const { code, ...response } = result;
 			res.status(code).json(response);
@@ -30,11 +29,11 @@ export class AssessmentController {
 	}
 	public static async findAll(req: Request, res: Response): Promise<void> {
 		try {
-			const { student } = req.body as { student: { id: string; type: string } };
+			const studentLogged = req.authStudent;
 			const { page, take } = req.query;
 
 			const service = new AssessmentService();
-			const result = await service.findAll(student.id, {
+			const result = await service.findAll(studentLogged, {
 				page: page ? Number(page) - 1 : undefined,
 				take: take ? Number(take) : undefined,
 			});

@@ -96,7 +96,6 @@ export class StudentController {
 			});
 		}
 	}
-
 	public static async remove(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;

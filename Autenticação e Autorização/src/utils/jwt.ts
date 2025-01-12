@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { AuthStudent } from '../types/student.types';
+
 export class JWT {
 	public generateToken(data: AuthStudent): string {
 		if (!process.env.JWT_SECRET) {

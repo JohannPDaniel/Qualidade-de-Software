@@ -1,14 +1,18 @@
-import { Request, Response } from 'express';
-import { ResponseApi } from '../types';
-import { AssessmentDto, CreateAssessmentDto } from '../dtos';
+import { Assessment, StudentType } from '@prisma/client';
 import { prisma } from '../database/prisma.database';
-import { Assessment } from '@prisma/client';
+import { AssessmentDto, CreateAssessmentDto } from '../dtos';
+import { ResponseApi } from '../types';
+import { AuthStudent } from '../types/student.types';
 
 export class AssessmentService {
 	public async create(
-		createAssementDto: CreateAssessmentDto
+		createAssementDto: CreateAssessmentDto,
+		studentLogged: AuthStudent
 	): Promise<ResponseApi> {
-		const { title, description, grade, studentId, student } = createAssementDto;
+		const { title, description, grade, studentId } = createAssementDto;
+
+		const studentValidate =
+			studentLogged.type !== StudentType.M ? studentLogged.id : studentId;
 
 		const studentFounded = await prisma.student.findUnique({
 			where: { id: studentId },
@@ -22,20 +26,12 @@ export class AssessmentService {
 			};
 		}
 
-		if (student.id !== studentId) {
-			return {
-				success: false,
-				code: 404,
-				message: 'Id informado inválido!',
-			};
-		}
-
 		const assessmentCreated = await prisma.assessment.create({
 			data: {
 				title,
 				description,
 				grade,
-				studentId,
+				studentId: studentValidate,
 			},
 		});
 
@@ -48,14 +44,16 @@ export class AssessmentService {
 	}
 
 	public async findAll(
-		id: string,
+		studentLogged: AuthStudent,
 		query?: { page?: number; take?: number }
 	): Promise<ResponseApi> {
-	
+		const studentId =
+			studentLogged.type !== StudentType.T ? undefined : studentLogged.id;
+
 		const assessmentList = await prisma.assessment.findMany({
-			skip: query?.page, 
-			take: query?.take, 
-			where: { studentId: id },
+			skip: query?.page,
+			take: query?.take,
+			where: { studentId },
 			orderBy: { createdAt: 'asc' },
 		});
 
@@ -156,7 +154,7 @@ export class AssessmentService {
 			description: assessment.description,
 			grade: Number(assessment.grade),
 			studentId: assessment.studentId,
-			createdAt: assessment.createdAt
+			createdAt: assessment.createdAt,
 		};
 	}
 }

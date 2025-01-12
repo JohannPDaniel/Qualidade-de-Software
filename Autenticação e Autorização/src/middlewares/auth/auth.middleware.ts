@@ -31,11 +31,11 @@ export class AuthMiddleware {
 			return;
 		}
 
-		req.body.student = {
+		req.authStudent = {
 			id: studentDecode.id,
-			type: studentDecode.type,
 			name: studentDecode.name,
 			email: studentDecode.email,
+			type: studentDecode.type,
 		};
 
 		next();
