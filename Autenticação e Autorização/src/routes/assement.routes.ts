@@ -1,11 +1,11 @@
+import { StudentType } from '@prisma/client';
 import { Router } from 'express';
-import { AuthMiddleware } from "../middlewares/auth/auth.middleware";
-import { ValidateUuidMiddleware } from "../middlewares/validate-uuid.middleware";
-import { CreateAssessmentMiddleware } from "../middlewares/assessment/create-assessment.middleware";
-import { AssessmentController } from "../controllers/assement.controller";
-import { UpdateAssessmentMiddleware } from "../middlewares/assessment/update-assessment.middleaware";
-import { TypeMidleware } from "../middlewares/type.midleware";
-import { StudentType } from "@prisma/client";
+import { AssessmentController } from '../controllers/assement.controller';
+import { CreateAssessmentMiddleware } from '../middlewares/assessment/create-assessment.middleware';
+import { UpdateAssessmentMiddleware } from '../middlewares/assessment/update-assessment.middleaware';
+import { AuthMiddleware } from '../middlewares/auth/auth.middleware';
+import { TypeMidleware } from '../middlewares/type.midleware';
+import { ValidateUuidMiddleware } from '../middlewares/validate-uuid.middleware';
 
 export class AssessmentRoutes {
 	public static execute(): Router {

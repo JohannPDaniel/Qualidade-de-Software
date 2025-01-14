@@ -10,7 +10,7 @@ export class AssessmentService {
 		studentLogged: AuthStudent
 	): Promise<ResponseApi> {
 		const { title, description, grade, studentId } = createAssementDto;
-
+		
 		const studentValidate =
 			studentLogged.type !== StudentType.M ? studentLogged.id : studentId;
 
