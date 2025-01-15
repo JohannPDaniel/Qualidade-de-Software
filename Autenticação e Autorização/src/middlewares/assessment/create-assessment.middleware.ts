@@ -7,7 +7,6 @@ export class CreateAssessmentMiddleware {
 		next: NextFunction
 	): void {
 		const { title, grade } = req.body;
-		const studentId = req.headers['x-student-id'];
 
 		if (!title) {
 			res.status(400).json({
@@ -25,14 +24,6 @@ export class CreateAssessmentMiddleware {
 			return;
 		}
 
-		if (!studentId) {
-			res.status(400).json({
-				success: false,
-				message: 'studentId é obrigatório !',
-			});
-			return;
-		}
-
 		next();
 	}
 	public static validateTypes(
@@ -41,7 +32,6 @@ export class CreateAssessmentMiddleware {
 		next: NextFunction
 	): void {
 		const { title, description, grade } = req.body;
-		const studentId = req.headers['x-student-id'];
 
 		if (typeof title !== 'string') {
 			res.status(400).json({
@@ -74,8 +64,7 @@ export class CreateAssessmentMiddleware {
 		res: Response,
 		next: NextFunction
 	): void {
-		const { title, description } = req.body;
-		const studentId = req.headers['x-student-id']
+		const { title, description, studentId } = req.body;
 
 		const regexUuid =
 			/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
@@ -96,7 +85,7 @@ export class CreateAssessmentMiddleware {
 			return;
 		}
 
-		if (typeof studentId !== 'string' || !regexUuid.test(studentId)) {
+		if (studentId && typeof studentId !== 'string' && !regexUuid.test(studentId)) {
 			res.status(400).json({
 				success: false,
 				message: 'Identificador studentId precisa ser um UUID!',

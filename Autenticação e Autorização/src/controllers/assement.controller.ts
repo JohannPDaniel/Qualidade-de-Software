@@ -5,15 +5,14 @@ import { AssessmentService } from '../service/assement.service';
 export class AssessmentController {
 	public static async create(req: Request, res: Response): Promise<void> {
 		try {
-			const { title, description, grade } = req.body;
-			const studentId = req.headers["x-student-id"] as string
+			const { title, description, grade, studentId } = req.body;
 			const studentLogged = req.authStudent;
 
 			const data: CreateAssessmentDto = {
 				title,
 				description,
 				grade,
-				studentId,
+				studentId: studentId ? studentId : studentLogged.id,
 			};
 
 			const service = new AssessmentService();
