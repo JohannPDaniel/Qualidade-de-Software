@@ -10,26 +10,26 @@ export class UpdateAssessmentMiddleware {
 
     if (title && typeof title !== "string") {
       res.status(400).json({
-        ok: false,
+        success: false,
         message: "Titulo deve ser um texto",
       });
     }
     if (description && typeof description !== "string") {
       res.status(400).json({
-        ok: false,
+        success: false,
         message: "Descrição deve ser uma string.",
       });
       return;
     }
     if (grade && typeof grade !== "number") {
       res.status(400).json({
-        ok: false,
+        success: false,
         message: "Nota deve ser um Number.",
       });
       return;
     }
 
-    return next();
+    next();
   }
 
   public static validateData(req: Request, res: Response, next: NextFunction) {
@@ -37,16 +37,16 @@ export class UpdateAssessmentMiddleware {
 
     if (title && title.length < 3) {
       res.status(400).json({
-        ok: false,
+        success: false,
         message: "Título deve conter no mínimo 4 caracteres.",
       });
     }
     if (description && description.length < 5) {
       res.status(400).json({
-        ok: false,
+        success: false,
         message: "Descrição deve conter no minimo 6 caracteres.",
       });
     }
-    return next();
+    next();
   }
 }
