@@ -29,7 +29,7 @@ export class UpdateAssessmentMiddleware {
       return;
     }
 
-    next();
+    return next();
   }
 
   public static validateData(req: Request, res: Response, next: NextFunction) {
@@ -47,6 +47,6 @@ export class UpdateAssessmentMiddleware {
         message: "Descrição deve conter no minimo 6 caracteres.",
       });
     }
-    next();
+    return next();
   }
 }
