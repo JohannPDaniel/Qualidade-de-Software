@@ -19,6 +19,7 @@ export class TypeMidleware {
 					success: false,
 					message: `Somente estudante(s) do(s) tipo ${allowed} pode acessar a rota ${method} - ${path}`,
 				});
+				return
 			}
 
 			next();
