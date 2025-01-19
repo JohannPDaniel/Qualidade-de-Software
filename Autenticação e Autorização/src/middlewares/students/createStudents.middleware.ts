@@ -14,6 +14,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'Favor inserir o nome, por favor !!!',
 			});
+			return
 		}
 
 		if (!email) {
@@ -21,6 +22,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'Favor inserir o e-mail, por favor !!!',
 			});
+			return;
 		}
 
 		if (!password) {
@@ -28,6 +30,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'Favor inserir a senha !!!',
 			});
+			return;
 		}
 
 		if (!type) {
@@ -35,6 +38,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'Favor inserir tipo, por favor !!!',
 			});
+			return;
 		}
 
 		if (!cpf) {
@@ -42,6 +46,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'Favor inserir o cpf, por favor !!!',
 			});
+			return;
 		}
 
 		next();
@@ -59,6 +64,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'O nome deve ser uma string',
 			});
+			return;
 		}
 
 		if (typeof email !== 'string') {
@@ -66,6 +72,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'O E-mail deve ser uma string',
 			});
+			return;
 		}
 
 		if (typeof password !== 'string') {
@@ -73,6 +80,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'A senha deve ser uma string',
 			});
+			return;
 		}
 
 		if (!validStudentType.includes(type)) {
@@ -80,6 +88,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'O tipo deve ser T ou M ou F !!!',
 			});
+			return;
 		}
 
 		if (age) {
@@ -89,6 +98,7 @@ export class CreateStudentsMiddleware {
 					message: 'A idade deve ser um número',
 				});
 			}
+			return;
 		}
 
 		if (typeof cpf !== 'string') {
@@ -96,6 +106,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'O cpf deve ser uma string',
 			});
+			return;
 		}
 
 		next();
@@ -112,6 +123,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'O nome deve ter pelo menos 3 caracteres',
 			});
+			return;
 		}
 
 		if (password.length < 4) {
@@ -119,6 +131,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'A senha deve conter pelo menos 4 caracteres',
 			});
+			return;
 		}
 
 		if (!email.includes('@') || !email.includes('.com')) {
@@ -126,6 +139,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'O e-mail deve conter (@) e (.com) !!!',
 			});
+			return;
 		}
 
 		if (cpf.length < 11) {
@@ -133,6 +147,7 @@ export class CreateStudentsMiddleware {
 				success: false,
 				message: 'O cpf deve conter 11 caracteres !!!',
 			});
+			return;
 		}
 
 		next();
