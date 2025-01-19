@@ -48,14 +48,15 @@ export class AssessmentService {
 		query?: { page?: number; take?: number }
 	): Promise<ResponseApi> {
 		const studentId =
-			studentLogged.type !== StudentType.T ? undefined : studentLogged.id;
+			studentLogged.type === StudentType.M ? studentLogged.id : undefined;
 
 		const assessmentList = await prisma.assessment.findMany({
 			skip: query?.page,
 			take: query?.take,
-			where: { studentId },
+			where: studentId ? { studentId } : undefined, // Remove filtro para `T`
 			orderBy: { createdAt: 'asc' },
 		});
+
 
 		if (!assessmentList) {
 			return {

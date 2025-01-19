@@ -9,6 +9,7 @@ export class FindAllStudentMiddleware {
                 success: false,
                 message: "O nome deve ser uma string"
             });
+			return
 		}
 
 		if (cpf && typeof cpf !== 'string') {
@@ -16,6 +17,7 @@ export class FindAllStudentMiddleware {
                 success: false,
                 message: "O cpf deve ser uma string"
             })
+			return
 		}
 
         next()

@@ -16,6 +16,7 @@ export class UpdateStudentMiddleware {
 				success: false,
 				message: 'O nome deve ser uma string',
 			});
+			return
 		}
 
 		if (password && typeof password !== 'string') {
@@ -23,6 +24,7 @@ export class UpdateStudentMiddleware {
 				success: false,
 				message: 'A senha deve ser uma string',
 			});
+			return;
 		}
 
 		if (type && !validStudentType.includes(type)) {
@@ -30,6 +32,7 @@ export class UpdateStudentMiddleware {
 				success: false,
 				message: 'O tipo deve ser T ou M ou F !!!',
 			});
+			return;
 		}
 
 		if (age && typeof age !== 'number') {
@@ -37,6 +40,7 @@ export class UpdateStudentMiddleware {
 				success: false,
 				message: 'A idade deve ser um número',
 			});
+			return;
 		}
 
 		next();
