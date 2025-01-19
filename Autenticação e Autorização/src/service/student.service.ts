@@ -49,6 +49,7 @@ export class StudentService {
 				name,
 				email,
 				password: passwordHash,
+				type,
 				age,
 				cpf,
 			},
