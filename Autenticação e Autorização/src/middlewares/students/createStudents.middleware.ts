@@ -91,15 +91,24 @@ export class CreateStudentsMiddleware {
 			return;
 		}
 
-		if (age) {
+		if (age !== undefined) {
 			if (typeof age !== 'number') {
 				response.status(400).json({
 					success: false,
 					message: 'A idade deve ser um número',
 				});
+				return;
 			}
-			return;
+
+			if (age < 0) {
+				response.status(400).json({
+					success: false,
+					message: 'A idade não pode ser negativa',
+				});
+				return;
+			}
 		}
+
 
 		if (typeof cpf !== 'string') {
 			response.status(400).json({
