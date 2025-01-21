@@ -1,0 +1,163 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Academy API",
+		"description": "API de controle academico de alunos e sua avaliações",
+		"contact": {
+			"email": "johannpatriciod@gmail.com"
+		},
+		"version": "1.0.0"
+	},
+	"externalDocs": {
+		"description": "Find out more about Swagger",
+		"url": "http://swagger.io"
+	},
+	"servers": [
+		{
+			"url": "http://localhost:3030",
+			"description": "API - Localhost"
+		}
+	],
+	"tags": [
+		{
+			"name": "Estudantes",
+			"description": "Todas as funcionalidades de estudantes."
+		},
+		{
+			"name": "Avaliações",
+			"description": "Todas as funcionalidades de avaliações."
+		}
+	],
+	"paths": {
+		"/students": {
+			"post": {
+				"tags": ["Estudantes"],
+				"summary": "Criação de estudantes",
+				"description": "Endpoint para cadastro de estudantes.",
+				"requestBody": {
+					"required": true,
+					"description": "Objeto contendo as informações do estudante a ser criado.",
+					"content": {
+						"application/json": {
+							"schema": "#/components/schemas/APIResponse"
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Cadastrado com sucesso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{ "$ref": "#/components/schemas/APIResponse" },
+										{
+											"type": "object",
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/Students"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Conflito de dados",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Pet not found"
+					},
+					"422": {
+						"description": "Validation exception"
+					}
+				},
+				"security": [
+					{
+						"petstore_auth": ["", ""]
+					}
+				]
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Students": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"name": {
+						"type": "string",
+						"example": "João Pereira"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"example": "joao@email.com"
+					},
+					"password": {
+						"type": "string",
+						"example": "senha123"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["T", "F", "M"]
+					},
+					"cpf": {
+						"type": "string",
+						"example": "111.111.111-11"
+					},
+					"age": {
+						"type": "number",
+						"example": 30
+					}
+				}
+			},
+			"ErrorResponse": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": false
+					},
+					"message": {
+						"type": "string",
+						"example": "Uma mensagem indicando o erro."
+					}
+				}
+			},
+			"APIResponse": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": true
+					},
+					"message": {
+						"type": "string",
+						"example": "Uma mensagem de sucesso."
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	}
+}
