@@ -110,7 +110,7 @@ export class StudentService {
 		return {
 			success: true,
 			code: 200,
-			message: 'Estudante encontrado!',
+			message: 'Estudante encontrado com sucesso!',
 			data: this.mapToDto(student),
 		};
 	}

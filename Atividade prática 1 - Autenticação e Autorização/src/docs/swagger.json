@@ -1,0 +1,454 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Academy API",
+		"description": "API de controle acadêmico de estudantes e suas avaliações.",
+		"contact": {
+			"email": "johannpatriciod@gmail.com"
+		},
+		"version": "1.0.0"
+	},
+	"servers": [
+		{
+			"url": "http://localhost:3030",
+			"description": "API - Localhost"
+		}
+	],
+	"tags": [
+		{
+			"name": "Estudantes",
+			"description": "Todas as funcionalidades relacionadas a estudantes."
+		}
+	],
+	"paths": {
+		"/students": {
+			"post": {
+				"tags": ["Estudantes"],
+				"summary": "Criar estudante",
+				"description": "Endpoint para cadastrar um novo estudante.",
+				"requestBody": {
+					"required": true,
+					"description": "Dados do estudante a ser criado.",
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateStudentDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{ "$ref": "#/components/schemas/APIResponseCreate" },
+										{
+											"type": "object",
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/StudentDto"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Conflito de dados - Email ou CPF já cadastrado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Dados inválidos fornecidos.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"tags": ["Estudantes"],
+				"summary": "Listar todos os estudantes",
+				"description": "Endpoint para listar todos os estudantes cadastrados.",
+				"parameters": [
+					{
+						"name": "name",
+						"in": "query",
+						"description": "Filtro pelo nome do estudante.",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "cpf",
+						"in": "query",
+						"description": "Filtro pelo CPF do estudante.",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Lista de estudantes recuperada com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/StudentDto"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Erro na requisição.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/students/{id}": {
+			"get": {
+				"tags": ["Estudantes"],
+				"summary": "Buscar estudante por ID",
+				"description": "Endpoint para buscar um estudante específico pelo ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID do estudante a ser buscado.",
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Estudante encontrado com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/StudentDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Acesso negado - Você não tem permissão para acessar este estudante.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Estudante não encontrado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": ["Estudantes"],
+				"summary": "Atualizar estudante",
+				"description": "Endpoint para atualizar os dados de um estudante.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID do estudante a ser atualizado.",
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"description": "Dados a serem atualizados.",
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateStudentDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Estudante atualizado com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{ "$ref": "#/components/schemas/APIResponseUpdate" },
+										{
+											"type": "object",
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/StudentDto"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Acesso negado - Você não tem permissão para atualizar este estudante.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Estudante não encontrado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["Estudantes"],
+				"summary": "Deletar estudante",
+				"description": "Endpoint para deletar um estudante específico.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID do estudante a ser deletado.",
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Estudante deletado com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{ "$ref": "#/components/schemas/APIResponseDelete" },
+										{
+											"type": "object",
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/StudentDto"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Acesso negado - Você não tem permissão para deletar este estudante.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Estudante não encontrado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"CreateStudentDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"example": "João Pereira"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"example": "joao@email.com"
+					},
+					"password": {
+						"type": "string",
+						"example": "senha123"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["T", "F", "M"],
+						"example": "M"
+					},
+					"cpf": {
+						"type": "string",
+						"example": "111.111.111-11"
+					},
+					"age": {
+						"type": "integer",
+						"example": 30
+					}
+				},
+				"required": ["name", "email", "password", "type", "cpf"]
+			},
+			"UpdateStudentDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"example": "João Pereira Atualizado"
+					},
+					"password": {
+						"type": "string",
+						"example": "novaSenha123"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["T", "F", "M"],
+						"example": "F"
+					},
+					"age": {
+						"type": "integer",
+						"example": 35
+					}
+				}
+			},
+			"StudentDto": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"name": {
+						"type": "string",
+						"example": "João Pereira"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"example": "joao@email.com"
+					},
+					"cpf": {
+						"type": "string",
+						"example": "111.111.111-11"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["T", "F", "M"],
+						"example": "M"
+					},
+					"age": {
+						"type": "integer",
+						"example": 30
+					}
+				}
+			},
+			"APIResponseCreate": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": true
+					},
+					"message": {
+						"type": "string",
+						"example": "Estudante cadastrado com sucesso."
+					}
+				}
+			},
+			"APIResponseUpdate": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": true
+					},
+					"message": {
+						"type": "string",
+						"example": "Estudante atualizado com sucesso."
+					}
+				}
+			},
+			"APIResponseDelete": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": true
+					},
+					"message": {
+						"type": "string",
+						"example": "Estudante deletado com sucesso."
+					}
+				}
+			},
+			"ErrorResponse": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": false
+					},
+					"message": {
+						"type": "string",
+						"example": "Erro detalhado sobre a operação."
+					}
+				}
+			}
+		}
+	}
+}
