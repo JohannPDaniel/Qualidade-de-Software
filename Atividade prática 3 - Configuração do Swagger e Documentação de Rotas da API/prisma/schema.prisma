@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String       @db.VarChar(250)
+  email       String       @unique @db.VarChar(250)
+  password    String       @db.Text
+  type        StudentType  @default(M)
+  age         Int?         @db.Integer
+  cpf         String       @db.Char(11)
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamp()
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at")
+  assessments Assessment[]
+
+  @@map("students")
+}
+
+model Assessment {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String   @db.VarChar(250)
+  description String?  @db.Text
+  grade       Decimal  @db.Decimal(4, 2)
+  studentId   String   @map("student_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp()
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("assessments")
+}
+
+enum StudentType {
+  M
+  T
+  F
+}
