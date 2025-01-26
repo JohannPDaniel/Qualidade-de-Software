@@ -16,8 +16,16 @@
 	],
 	"tags": [
 		{
+			"name": "Login",
+			"description": "Todas as funcionalidades relacionadas ao login."
+		},
+		{
 			"name": "Estudantes",
 			"description": "Todas as funcionalidades relacionadas a estudantes."
+		},
+		{
+			"name": "Avaliações",
+			"description": "Todas as funcionalidades relacionadas a avaliações."
 		}
 	],
 	"paths": {
@@ -39,7 +47,7 @@
 				},
 				"responses": {
 					"201": {
-						"description": "",
+						"description": "Estudante criado com sucesso.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -78,7 +86,12 @@
 							}
 						}
 					}
-				}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
 			},
 			"get": {
 				"tags": ["Estudantes"],
@@ -120,13 +133,16 @@
 						"description": "Erro na requisição.",
 						"content": {
 							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
+								"$ref": "#/components/schemas/ErrorResponse"
 							}
 						}
 					}
-				}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
 			}
 		},
 		"/students/{id}": {
@@ -177,127 +193,42 @@
 							}
 						}
 					}
-				}
-			},
-			"put": {
-				"tags": ["Estudantes"],
-				"summary": "Atualizar estudante",
-				"description": "Endpoint para atualizar os dados de um estudante.",
-				"parameters": [
+				},
+				"security": [
 					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"description": "ID do estudante a ser atualizado.",
-						"schema": {
-							"type": "string",
-							"format": "uuid"
-						}
+						"bearerAuth": []
 					}
-				],
+				]
+			}
+		},
+		"/login": {
+			"post": {
+				"tags": ["Login"],
+				"summary": "Realizar login",
+				"description": "Endpoint para autenticar um estudante e retornar um token JWT.",
 				"requestBody": {
 					"required": true,
-					"description": "Dados a serem atualizados.",
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UpdateStudentDto"
+								"$ref": "#/components/schemas/LoginDto"
 							}
 						}
 					}
 				},
 				"responses": {
 					"200": {
-						"description": "Estudante atualizado com sucesso.",
+						"description": "Login realizado com sucesso.",
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{ "$ref": "#/components/schemas/APIResponseUpdate" },
-										{
-											"type": "object",
-											"properties": {
-												"data": {
-													"$ref": "#/components/schemas/StudentDto"
-												}
-											}
-										}
-									]
+									"$ref": "#/components/schemas/LoginResponse"
 								}
 							}
 						}
 					},
-					"403": {
-						"description": "Acesso negado - Você não tem permissão para atualizar este estudante.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Estudante não encontrado.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"tags": ["Estudantes"],
-				"summary": "Deletar estudante",
-				"description": "Endpoint para deletar um estudante específico.",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"description": "ID do estudante a ser deletado.",
-						"schema": {
-							"type": "string",
-							"format": "uuid"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Estudante deletado com sucesso.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"allOf": [
-										{ "$ref": "#/components/schemas/APIResponseDelete" },
-										{
-											"type": "object",
-											"properties": {
-												"data": {
-													"$ref": "#/components/schemas/StudentDto"
-												}
-											}
-										}
-									]
-								}
-							}
-						}
-					},
-					"403": {
-						"description": "Acesso negado - Você não tem permissão para deletar este estudante.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Estudante não encontrado.",
+					"401": {
+						"description": "Credenciais inválidas.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -335,7 +266,7 @@
 					},
 					"cpf": {
 						"type": "string",
-						"example": "111.111.111-11"
+						"example": "11111111111"
 					},
 					"age": {
 						"type": "integer",
@@ -344,34 +275,13 @@
 				},
 				"required": ["name", "email", "password", "type", "cpf"]
 			},
-			"UpdateStudentDto": {
-				"type": "object",
-				"properties": {
-					"name": {
-						"type": "string",
-						"example": "João Pereira Atualizado"
-					},
-					"password": {
-						"type": "string",
-						"example": "novaSenha123"
-					},
-					"type": {
-						"type": "string",
-						"enum": ["T", "F", "M"],
-						"example": "F"
-					},
-					"age": {
-						"type": "integer",
-						"example": 35
-					}
-				}
-			},
 			"StudentDto": {
 				"type": "object",
 				"properties": {
 					"id": {
 						"type": "string",
-						"format": "uuid"
+						"format": "uuid",
+						"example": "123e4567-e89b-12d3-a456-426614174000"
 					},
 					"name": {
 						"type": "string",
@@ -384,7 +294,7 @@
 					},
 					"cpf": {
 						"type": "string",
-						"example": "111.111.111-11"
+						"example": "11111111111"
 					},
 					"type": {
 						"type": "string",
@@ -397,6 +307,34 @@
 					}
 				}
 			},
+			"LoginDto": {
+				"type": "object",
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email",
+						"example": "joao@email.com"
+					},
+					"password": {
+						"type": "string",
+						"example": "senha123"
+					}
+				},
+				"required": ["email", "password"]
+			},
+			"LoginResponse": {
+				"type": "object",
+				"properties": {
+					"token": {
+						"type": "string",
+						"example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+					},
+					"expiresIn": {
+						"type": "integer",
+						"example": 3600
+					}
+				}
+			},
 			"APIResponseCreate": {
 				"type": "object",
 				"properties": {
@@ -406,33 +344,7 @@
 					},
 					"message": {
 						"type": "string",
-						"example": "Estudante cadastrado com sucesso."
-					}
-				}
-			},
-			"APIResponseUpdate": {
-				"type": "object",
-				"properties": {
-					"success": {
-						"type": "boolean",
-						"example": true
-					},
-					"message": {
-						"type": "string",
-						"example": "Estudante atualizado com sucesso."
-					}
-				}
-			},
-			"APIResponseDelete": {
-				"type": "object",
-				"properties": {
-					"success": {
-						"type": "boolean",
-						"example": true
-					},
-					"message": {
-						"type": "string",
-						"example": "Estudante deletado com sucesso."
+						"example": "Estudante cadastrado com sucesso!"
 					}
 				}
 			},
@@ -448,6 +360,13 @@
 						"example": "Erro detalhado sobre a operação."
 					}
 				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
 			}
 		}
 	}
