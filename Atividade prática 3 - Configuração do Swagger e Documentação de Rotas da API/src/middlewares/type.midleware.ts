@@ -5,6 +5,7 @@ export class TypeMidleware {
 	public static validate(allowedTypes: StudentType[]) {
 		return (req: Request, res: Response, next: NextFunction) => {
 			const type = req.authStudent.type;
+			console.log('type:', type)
 
 			if (!allowedTypes) {
 				return next();

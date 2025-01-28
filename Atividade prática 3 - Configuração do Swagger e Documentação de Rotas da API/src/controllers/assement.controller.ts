@@ -67,6 +67,8 @@ export class AssessmentController {
 	public static async update(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;
+			const studentLogged = req.authStudent;
+
 			const { title, description, grade } = req.body;
 
 			const service = new AssessmentService();

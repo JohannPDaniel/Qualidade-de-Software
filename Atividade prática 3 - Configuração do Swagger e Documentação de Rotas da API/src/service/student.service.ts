@@ -141,8 +141,6 @@ export class StudentService {
 			};
 		}
 
-		console.log('Dados para atualização:', updateStudentDto);
-
 		const studentUpdated = await prisma.student.update({
 			where: { id },
 			data: { ...updateStudentDto },

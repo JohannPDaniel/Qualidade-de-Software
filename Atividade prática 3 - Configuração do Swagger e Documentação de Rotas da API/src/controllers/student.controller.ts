@@ -75,7 +75,7 @@ export class StudentController {
 	public static async update(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;
-			const { student } = req.body as { student: { id: string; type: string } };
+			const student = req.authStudent;
 			const { name, password, type, age } = req.body;
 
 			const service = new StudentService();
@@ -99,7 +99,7 @@ export class StudentController {
 	public static async remove(req: Request, res: Response): Promise<void> {
 		try {
 			const { id } = req.params;
-			const { student } = req.body as { student: { id: string; type: string } };
+			const student = req.authStudent
 
 			const service = new StudentService();
 			const result = await service.remove(id, student.id);
