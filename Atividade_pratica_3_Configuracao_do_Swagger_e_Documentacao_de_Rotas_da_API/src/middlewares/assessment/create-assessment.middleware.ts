@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { regexUuid } from '../';
 
 export class CreateAssessmentMiddleware {
 	public static validateRequired(
@@ -65,9 +66,6 @@ export class CreateAssessmentMiddleware {
 		next: NextFunction
 	): void {
 		const { title, description, studentId } = req.body;
-
-		const regexUuid =
-			/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
 		if (title.length < 3) {
 			res.status(400).json({
