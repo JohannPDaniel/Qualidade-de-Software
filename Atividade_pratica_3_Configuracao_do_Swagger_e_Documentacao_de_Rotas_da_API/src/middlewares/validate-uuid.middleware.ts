@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { regexUuid } from "../types/regexUUID";
 
 export class ValidateUuidMiddleware {
 	public static validate(
@@ -8,8 +9,6 @@ export class ValidateUuidMiddleware {
 	): void {
 		const { id } = req.params;
 
-		const regexUuid =
-			/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
 		if (!regexUuid.test(id)) {
 			res.status(400).json({

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { regexUuid } from '../';
+import { regexUuid } from "../../types/regexUUID";
 
 export class CreateAssessmentMiddleware {
 	public static validateRequired(
