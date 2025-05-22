@@ -2,7 +2,6 @@ import { prisma } from '../database/prisma.database';
 import { LoginDto } from '../dtos';
 import { ResponseApi } from '../types';
 import { Bcrypt } from '../utils/bcript';
-import { Student } from '@prisma/client';
 import { JWT } from '../utils/jwt';
 import { AuthStudent } from '../types/student.types';
 

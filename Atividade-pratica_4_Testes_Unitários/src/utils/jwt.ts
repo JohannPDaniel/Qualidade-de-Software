@@ -1,18 +1,25 @@
 import jwt from 'jsonwebtoken';
 import { AuthStudent } from '../types/student.types';
+import { StringValue } from "ms"
 
 export class JWT {
-	public generateToken(data: AuthStudent): string {
-		if (!process.env.JWT_SECRET) {
-			throw new Error('JWT_SECRET não definido !!!');
+	public generateToken(user: AuthStudent): string {
+		const secret = process.env.JWT_SECRET;
+		if (!secret) {
+			throw new Error('JWT_SECRET não definido.');
 		}
-		const token = jwt.sign(data, process.env.JWT_SECRET, {
+
+		const expiresIn = (process.env.EXPIRES_IN || '1h') as StringValue;
+
+		const options: jwt.SignOptions = {
 			algorithm: 'HS256',
-			expiresIn: process.env.JWT_EXPIRES_IN,
-		});
+			expiresIn,
+		};
+
+		const token = jwt.sign(user, secret, options);
 		return token;
 	}
-    
+
 	public verifyToken(token: string): AuthStudent | null {
 		try {
 			if (!process.env.JWT_SECRET) {
