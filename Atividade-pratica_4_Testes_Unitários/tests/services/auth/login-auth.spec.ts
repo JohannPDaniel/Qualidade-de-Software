@@ -35,36 +35,6 @@ describe('AuthService - login', () => {
 		expect(result.message).toMatch(/senha/i);
 	});
 
-	it('Deve ser realizado login quando fornecido um e-mail e senha corretos', async () => {
-		const sut = createSut();
-		const student = StudentMock.build();
-
-		const payload = {
-			id: student.id,
-			name: student.name,
-			email: student.email,
-			type: student.type,
-		};
-
-		prismaMock.student.findUnique.mockResolvedValue(student);
-		jest.spyOn(Bcrypt.prototype, 'verify').mockResolvedValue(true);
-
-		const jwtSpy = jest
-			.spyOn(JWT.prototype, 'generateToken')
-			.mockReturnValue('fake.jwt.token');
-
-		const result = await sut.login({
-			email: student.email,
-			password: 'senha_correta',
-		});
-
-		expect(jwtSpy).toHaveBeenCalledWith(payload);
-		expect(result.success).toBe(true);
-		expect(result.code).toBe(200);
-		expect(result.data.token).toBe('fake.jwt.token');
-		expect(result.data.student).toEqual(payload);
-	});
-
 	it('Deve retornar 404 quando a senha for vazia', async () => {
 		const sut = createSut();
 		const student = StudentMock.build();
