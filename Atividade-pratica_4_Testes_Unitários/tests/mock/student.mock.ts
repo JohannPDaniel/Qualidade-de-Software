@@ -6,7 +6,7 @@ interface StudentMockInterface {
 	name?: string;
 	email?: string;
 	password?: string;
-	type?: StudentType | string; // aceita string para validar
+	type?: StudentType | string; 
 	age?: number | null;
 	cpf?: string;
 	createdAt?: Date;
@@ -19,7 +19,7 @@ export class StudentMock {
 
 		const type = validTypes.includes(params?.type as StudentType)
 			? (params?.type as StudentType)
-			: StudentType.F; // valor padrão seguro
+			: StudentType.F; 
 
 		return {
 			id: params?.id || randomUUID(),
