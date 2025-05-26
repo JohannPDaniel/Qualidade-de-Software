@@ -16,10 +16,9 @@ interface StudentMockInterface {
 export class StudentMock {
 	public static build(params?: StudentMockInterface) {
 		const validTypes = [StudentType.F, StudentType.M, StudentType.T];
-
 		const type = validTypes.includes(params?.type as StudentType)
 			? (params?.type as StudentType)
-			: StudentType.F; 
+			: StudentType.F;
 
 		return {
 			id: params?.id || randomUUID(),
@@ -29,8 +28,9 @@ export class StudentMock {
 			type,
 			age: params?.age ?? null,
 			cpf: params?.cpf || 'any_cpf',
-			createdAt: new Date(),
-			updatedAt: new Date(),
+			createdAt: params?.createdAt || expect.any(Date),
+			updatedAt: params?.updatedAt || expect.any(Date),
+			assessments: undefined,
 		};
 	}
 }
