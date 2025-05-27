@@ -53,7 +53,7 @@ describe('StudentService - Create', () => {
 			email: 'email@email.com',
 			cpf: '11111111111',
 			type: 'M',
-            age: undefined
+            age: null
 		});
 
 		jest
@@ -68,7 +68,7 @@ describe('StudentService - Create', () => {
 			password: 'hash_password',
 			type: 'M',
 			cpf: '11111111111',
-            age: undefined
+            age: null
 		});
 		console.log('result:', result.data);
 
@@ -78,7 +78,7 @@ describe('StudentService - Create', () => {
 			email: 'email@email.com',
 			cpf: '11111111111',
 			type: 'M',
-			age: undefined,
+			age: null,
 			assessments: undefined,
 		});
 
@@ -89,7 +89,7 @@ describe('StudentService - Create', () => {
 				password: 'hash_password',
 				type: 'M',
 				cpf: '11111111111',
-				age: undefined,
+				age: null,
 			},
 		});
 	});

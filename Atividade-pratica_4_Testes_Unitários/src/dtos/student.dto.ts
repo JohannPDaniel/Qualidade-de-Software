@@ -5,7 +5,7 @@ export interface CreateStudentDto {
 	email: string;
 	password: string;
 	type: StudentType;
-	age?: number;
+	age?: number | null;
 	cpf: string;
 }
 
