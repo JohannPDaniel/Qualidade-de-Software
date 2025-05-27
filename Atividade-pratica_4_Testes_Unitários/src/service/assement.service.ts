@@ -53,7 +53,7 @@ export class AssessmentService {
 		const assessmentList = await prisma.assessment.findMany({
 			skip: query?.page,
 			take: query?.take,
-			where: studentId ? { studentId } : undefined, // Remove filtro para `T`
+			where: studentId ? { studentId } : undefined,
 			orderBy: { createdAt: 'asc' },
 		});
 

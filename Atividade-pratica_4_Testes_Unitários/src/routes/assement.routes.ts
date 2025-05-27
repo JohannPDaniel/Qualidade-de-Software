@@ -11,7 +11,6 @@ export class AssessmentRoutes {
 	public static execute(): Router {
 		const router = Router();
 
-		//CREATE - POST
 		router.post(
 			'/assessments',
 			[
@@ -26,7 +25,7 @@ export class AssessmentRoutes {
 
 		router.get(
 			'/assessments',
-			AuthMiddleware.validate, // {student: { id, type }}
+			AuthMiddleware.validate,
 			AssessmentController.findAll
 		);
 

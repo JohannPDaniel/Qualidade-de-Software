@@ -25,6 +25,14 @@ describe('StudentService - Create', () => {
 		});
 
 		expect(result.code).toBe(409);
+		expect(result.success).toBeFalsy;
+		expect(result.message).toMatch(/email/i);
+		expect(result.data).toBeUndefined();
+		expect(prismaMock.student.findFirst).toHaveBeenCalledWith({
+			where: {
+				OR: [{ email: 'any_email' }, { cpf: '11111111111' }],
+			},
+		});
 	});
 
 	it('Deve retornar 409 quando o CPF estiver em uso', async () => {
@@ -42,6 +50,14 @@ describe('StudentService - Create', () => {
 		});
 
 		expect(result.code).toBe(409);
+		expect(result.success).toBeFalsy;
+		expect(result.message).toMatch(/cpf/i);
+		expect(result.data).toBeUndefined();
+		expect(prismaMock.student.findFirst).toHaveBeenCalledWith({
+			where: {
+				OR: [{ email: 'email@email.com' }, { cpf: 'any_cpf' }],
+			},
+		});
 	});
 
 	it('Deve cadastrar um estudante quando fornecido um body válido', async () => {
@@ -53,10 +69,10 @@ describe('StudentService - Create', () => {
 			email: 'email@email.com',
 			cpf: '11111111111',
 			type: 'M',
-            age: null
+			age: null,
 		});
 
-		jest
+		const hashSpy = jest
 			.spyOn(Bcrypt.prototype, 'generateHash')
 			.mockResolvedValue('hash_password');
 
@@ -68,9 +84,12 @@ describe('StudentService - Create', () => {
 			password: 'hash_password',
 			type: 'M',
 			cpf: '11111111111',
-            age: null
+			age: null,
 		});
 
+		expect(result.code).toBe(201);
+		expect(result.success).toBe(true);
+		expect(result.message).toMatch(/sucesso/i);
 		expect(result.data).toMatchObject({
 			id: studentMock.id,
 			name: 'any_name',
@@ -91,5 +110,7 @@ describe('StudentService - Create', () => {
 				age: null,
 			},
 		});
+
+		expect(hashSpy).toHaveBeenCalledWith('hash_password');
 	});
 });
