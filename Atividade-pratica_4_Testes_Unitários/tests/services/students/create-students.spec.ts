@@ -70,7 +70,6 @@ describe('StudentService - Create', () => {
 			cpf: '11111111111',
             age: null
 		});
-		console.log('result:', result.data);
 
 		expect(result.data).toMatchObject({
 			id: studentMock.id,
