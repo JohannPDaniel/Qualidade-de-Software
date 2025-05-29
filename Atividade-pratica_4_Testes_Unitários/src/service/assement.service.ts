@@ -15,7 +15,7 @@ export class AssessmentService {
 			studentLogged.type !== StudentType.M ? studentLogged.id : studentId;
 
 		const studentFounded = await prisma.student.findUnique({
-			where: { id: studentId },
+			where: { id: studentValidate },
 		});
 
 		if (!studentFounded) {
