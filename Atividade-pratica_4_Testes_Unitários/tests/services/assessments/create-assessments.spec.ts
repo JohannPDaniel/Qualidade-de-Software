@@ -16,7 +16,7 @@ describe('AssessmentService - Create', () => {
 
 		const createAssessmentDto: CreateAssessmentDto = {
 			title: assessmentMock.title,
-			description: assessmentMock.description,
+			description: assessmentMock.description ?? "",
 			grade:
 				typeof assessmentMock.grade === 'number'
 					? assessmentMock.grade
@@ -50,7 +50,7 @@ describe('AssessmentService - Create', () => {
 
 		const createAssessmentDto: CreateAssessmentDto = {
 			title: assessmentMock.title,
-			description: assessmentMock.description,
+			description: assessmentMock.description ?? "",
 			grade:
 				typeof assessmentMock.grade === 'number'
 					? assessmentMock.grade

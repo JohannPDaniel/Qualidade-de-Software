@@ -1,4 +1,4 @@
-import { Assessment, StudentType } from '@prisma/client';
+import { Assessment, Prisma, StudentType } from '@prisma/client';
 import { prisma } from '../database/prisma.database';
 import { AssessmentDto, CreateAssessmentDto } from '../dtos';
 import { ResponseApi } from '../types';
@@ -161,8 +161,8 @@ export class AssessmentService {
 	}
 }
 
-interface UpdateDTO {
+ export interface UpdateDTO {
 	title?: string;
 	description?: string;
-	grade?: number;
+	grade?: number | Prisma.Decimal;
 }
