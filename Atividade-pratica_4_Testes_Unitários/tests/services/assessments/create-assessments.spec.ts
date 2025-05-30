@@ -3,6 +3,7 @@ import { prismaMock } from '../../config/prisma.mock';
 import { CreateAssessmentDto } from '../../dtos';
 import { AssessmentMock } from '../../mock/assessments.mock';
 import { StudentMock } from '../../mock/student.mock';
+import { AuthStudent } from "../../types/student.types";
 
 describe('AssessmentService - Create', () => {
 	const createSut = () => new AssessmentService();
@@ -57,11 +58,11 @@ describe('AssessmentService - Create', () => {
 			studentId: assessmentMock.studentId,
 		};
 
-		const authStudent = {
+		const authStudent: AuthStudent = {
 			id: studentMock.id,
 			name: studentMock.name,
 			email: studentMock.email,
-			type: 'M', // <--- aqui está o ponto-chave
+			type: studentMock.type, 
 		};
 
 		prismaMock.student.findUnique.mockResolvedValue(studentMock);

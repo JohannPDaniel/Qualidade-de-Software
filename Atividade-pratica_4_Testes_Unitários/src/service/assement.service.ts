@@ -58,7 +58,7 @@ export class AssessmentService {
 		});
 
 
-		if (!assessmentList) {
+		if (!assessmentList || assessmentList.length === 0) {
 			return {
 				success: false,
 				code: 404,
