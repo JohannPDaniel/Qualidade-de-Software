@@ -5,6 +5,7 @@ import { StudentMock } from './student.mock';
 export class AssessmentMock {
 	public static build(params?: Partial<Assessment>) {
 		const student = StudentMock.build();
+		const now = new Date()
 
 		return {
 			id: params?.id || randomUUID(),
@@ -15,8 +16,8 @@ export class AssessmentMock {
 					? params.grade
 					: new Prisma.Decimal(params?.grade ?? 8.5),
 			studentId: params?.studentId || student.id,
-			createdAt: params?.createdAt || new Date(),
-			updatedAt: params?.updatedAt || new Date(),
+			createdAt: params?.createdAt || now,
+			updatedAt: params?.updatedAt || now,
 		};
 	}
 }

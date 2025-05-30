@@ -82,8 +82,8 @@ export class AssessmentService {
 		if (!assessment) {
 			return {
 				success: false,
-				code: 404, // Not Found
-				message: 'Avaliaçao não encontrado!',
+				code: 404, 
+				message: 'Avaliação não encontrado!',
 			};
 		}
 
@@ -156,6 +156,7 @@ export class AssessmentService {
 			grade: Number(assessment.grade),
 			studentId: assessment.studentId,
 			createdAt: assessment.createdAt,
+			updatedAt: assessment.updatedAt
 		};
 	}
 }
