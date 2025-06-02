@@ -35,16 +35,16 @@ export class LoginMiddleware {
 
 		if (typeof email !== 'string') {
 			res.status(400).json({
-				successs: false,
-				massage: 'Email deve ser uma string !',
+				success: false,
+				message: 'Email deve ser uma string !',
 			});
 			return;
 		}
 
 		if (typeof password !== 'string') {
 			res.status(400).json({
-				successs: false,
-				massage: 'Senha deve ser uma string !',
+				success: false,
+				message: 'Senha deve ser uma string !',
 			});
 			return;
 		}
