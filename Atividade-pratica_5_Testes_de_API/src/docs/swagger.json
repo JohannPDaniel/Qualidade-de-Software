@@ -1,0 +1,931 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Academy API",
+		"description": "API de controle acadêmico de estudantes e suas avaliações.",
+		"contact": {
+			"email": "johannpatriciod@gmail.com"
+		},
+		"version": "1.0.0"
+	},
+	"servers": [
+		{
+			"url": "http://localhost:3030",
+			"description": "API - Localhost"
+		}
+	],
+	"tags": [
+		{
+			"name": "Login",
+			"description": "Todas as funcionalidades relacionadas ao login."
+		},
+		{
+			"name": "Estudantes",
+			"description": "Todas as funcionalidades relacionadas a estudantes."
+		},
+		{
+			"name": "Avaliações",
+			"description": "Todas as funcionalidades relacionadas a avaliações."
+		}
+	],
+	"paths": {
+		"/students": {
+			"post": {
+				"tags": ["Estudantes"],
+				"summary": "Criar estudante",
+				"description": "Endpoint para cadastrar um novo estudante.",
+				"requestBody": {
+					"required": true,
+					"description": "Dados do estudante a ser criado.",
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateStudentDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Estudante criado com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{ "$ref": "#/components/schemas/APIResponseStudentCreate" },
+										{
+											"type": "object",
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/StudentDto"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Conflito de dados - Email ou CPF já cadastrado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Dados inválidos fornecidos.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"tags": ["Estudantes"],
+				"summary": "Listar todos os estudantes",
+				"description": "Endpoint para listar todos os estudantes cadastrados.",
+				"parameters": [
+					{
+						"name": "name",
+						"in": "query",
+						"description": "Filtro pelo nome do estudante.",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "cpf",
+						"in": "query",
+						"description": "Filtro pelo CPF do estudante.",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Lista de estudantes recuperada com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/StudentDto"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Erro na requisição.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/students/{id}": {
+			"get": {
+				"tags": ["Estudantes"],
+				"summary": "Buscar estudante por ID",
+				"description": "Endpoint para buscar um estudante específico pelo ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID do estudante a ser buscado.",
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Estudante encontrado com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/StudentDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Acesso negado - Você não tem permissão para acessar este estudante.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Estudante não encontrado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			},
+			"put": {
+				"tags": ["Estudantes"],
+				"summary": "Atualizar estudante por ID",
+				"description": "Endpoint para buscar um estudante específico pelo ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID do estudante.",
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"description": "Dados do estudante a ser atualizado.",
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/StudentUpdateDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Avaliação atualizada com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/APIResponseAssessmentUpdate"
+										},
+										{
+											"type": "object",
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/StudentUpdateDto"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Avaliação não encontrada.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			},
+			"delete": {
+				"tags": ["Estudantes"],
+				"summary": "Atualizar avaliação por ID",
+				"description": "Endpoint para buscar uma avaliação específica pelo ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID da avaliação.",
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Estudante deletado com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/APIResponseStudentDelete"
+										},
+										{
+											"type": "object",
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/StudentDto"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Avaliação não encontrada.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/login": {
+			"post": {
+				"tags": ["Login"],
+				"summary": "Realizar login",
+				"description": "Endpoint para autenticar um estudante e retornar um token JWT.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LoginDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Login realizado com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LoginResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Credenciais inválidas.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/assessments": {
+			"post": {
+				"tags": ["Avaliações"],
+				"summary": "Criar uma avaliação",
+				"description": "Endpoint para criar uma nova avaliação para um estudante.",
+				"requestBody": {
+					"required": true,
+					"description": "Dados da avaliação a ser criada.",
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateAssessmentDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Avaliação criada com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/APIResponseAssessmentCreate"
+										},
+										{
+											"type": "object",
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/AssessmentDto"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Estudante não encontrado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Dados inválidos fornecidos.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			},
+			"get": {
+				"tags": ["Avaliações"],
+				"summary": "Listar avaliações",
+				"description": "Endpoint para listar todas as avaliações registradas.",
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"description": "Número da página (começa em 1).",
+						"schema": {
+							"type": "integer",
+							"example": 1
+						}
+					},
+					{
+						"name": "take",
+						"in": "query",
+						"description": "Quantidade de registros por página.",
+						"schema": {
+							"type": "integer",
+							"example": 10
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Avaliações buscadas com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AssessmentDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Erro na requisição.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		},
+		"/assessments/{id}": {
+			"get": {
+				"tags": ["Avaliações"],
+				"summary": "Buscar avaliação por ID",
+				"description": "Endpoint para buscar uma avaliação específica pelo ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID da avaliação.",
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Avaliação encontrada com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AssessmentDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Avaliação não encontrada.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			},
+			"put": {
+				"tags": ["Avaliações"],
+				"summary": "Atualizar avaliação por ID",
+				"description": "Endpoint para buscar uma avaliação específica pelo ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID da avaliação.",
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"description": "Dados da avaliação a ser criada.",
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AssessmentUpdateDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Avaliação atualizada com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/APIResponseAssessmentUpdate"
+										},
+										{
+											"type": "object",
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/AssessmentUpdateDto"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Avaliação não encontrada.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			},
+			"delete": {
+				"tags": ["Avaliações"],
+				"summary": "Atualizar avaliação por ID",
+				"description": "Endpoint para buscar uma avaliação específica pelo ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID da avaliação.",
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Avaliação deletada com sucesso.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/APIResponseAssessmentDelete"
+										},
+										{
+											"type": "object",
+											"properties": {
+												"data": {
+													"$ref": "#/components/schemas/AssessmentDto"
+												}
+											}
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Avaliação não encontrada.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				]
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"CreateStudentDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"example": "João Pereira"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"example": "joao@email.com"
+					},
+					"password": {
+						"type": "string",
+						"example": "senha123"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["T", "F", "M"],
+						"example": "M"
+					},
+					"cpf": {
+						"type": "string",
+						"example": "11111111111"
+					},
+					"age": {
+						"type": "integer",
+						"example": 30
+					}
+				},
+				"required": ["name", "email", "password", "type", "cpf"]
+			},
+			"CreateAssessmentDto": {
+				"type": "object",
+				"properties": {
+					"title": {
+						"type": "string",
+						"example": "Titulo 1"
+					},
+					"description": {
+						"type": "string",
+						"example": "Descrição 1"
+					},
+					"grade": {
+						"type": "number",
+						"example": 8.4
+					},
+					"studentId": {
+						"type": "string",
+						"format": "uuid"
+					}
+				},
+				"required": ["title", "description", "grade", "studentId"]
+			},
+			"StudentDto": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"example": "123e4567-e89b-12d3-a456-426614174000"
+					},
+					"name": {
+						"type": "string",
+						"example": "João Pereira"
+					},
+					"email": {
+						"type": "string",
+						"format": "email",
+						"example": "joao@email.com"
+					},
+					"cpf": {
+						"type": "string",
+						"example": "11111111111"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["T", "F", "M"],
+						"example": "M"
+					},
+					"age": {
+						"type": "integer",
+						"example": 30
+					}
+				}
+			},
+			"StudentUpdateDto": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"example": "Flavia martins (atualizado)"
+					},
+					"type": {
+						"type": "string",
+						"example": "T"
+					},
+					"age": {
+						"type": "number",
+						"example": 20
+					}
+				}
+			},
+			"AssessmentDto": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"title": {
+						"type": "string",
+						"example": "Titulo 1"
+					},
+					"description": {
+						"type": "string",
+						"example": "Descrição 1"
+					},
+					"grade": {
+						"type": "number",
+						"example": 8.4
+					},
+					"studentId": {
+						"type": "string",
+						"format": "uuid"
+					}
+				}
+			},
+			"AssessmentUpdateDto": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"title": {
+						"type": "string",
+						"example": "Titulo 1 (atualizado)"
+					},
+					"description": {
+						"type": "string",
+						"example": "Descrição 1 (atualizado)"
+					},
+					"grade": {
+						"type": "number",
+						"example": 10
+					}
+				}
+			},
+			"LoginDto": {
+				"type": "object",
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email",
+						"example": "joao@email.com"
+					},
+					"password": {
+						"type": "string",
+						"example": "senha123"
+					}
+				},
+				"required": ["email", "password"]
+			},
+			"LoginResponse": {
+				"type": "object",
+				"properties": {
+					"token": {
+						"type": "string",
+						"example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+					},
+					"expiresIn": {
+						"type": "integer",
+						"example": 3600
+					}
+				}
+			},
+			"APIResponseStudentCreate": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": true
+					},
+					"message": {
+						"type": "string",
+						"example": "Estudante cadastrado com sucesso!"
+					}
+				}
+			},
+			"APIResponseStudentUpdate": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": true
+					},
+					"message": {
+						"type": "string",
+						"example": "Estudante atualizado com sucesso!"
+					}
+				}
+			},
+			"APIResponseStudentDelete": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": true
+					},
+					"message": {
+						"type": "string",
+						"example": "Estudante deletado com sucesso!"
+					}
+				}
+			},
+			"APIResponseAssessmentCreate": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": true
+					},
+					"message": {
+						"type": "string",
+						"example": "Avaliação cadastrada com sucesso!"
+					}
+				}
+			},
+			"APIResponseAssessmentUpdate": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": true
+					},
+					"message": {
+						"type": "string",
+						"example": "Avaliação atualizada com sucesso!"
+					}
+				}
+			},
+			"APIResponseAssessmentDelete": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": true
+					},
+					"message": {
+						"type": "string",
+						"example": "Avaliação deletada com sucesso!"
+					}
+				}
+			},
+			"ErrorResponse": {
+				"type": "object",
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"example": false
+					},
+					"message": {
+						"type": "string",
+						"example": "Erro detalhado sobre a operação."
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	}
+}
