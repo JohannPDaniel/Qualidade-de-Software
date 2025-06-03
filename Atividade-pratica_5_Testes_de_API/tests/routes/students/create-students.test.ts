@@ -1,12 +1,10 @@
 import supertest from 'supertest';
 import { createExpressServer } from '../../../src/express.server';
-import { StudentMock } from '../../mock/student.mock';
 import { StudentService } from '../../../src/service';
 
 describe('POST /students', () => {
 	const server = createExpressServer();
 	const endpoint = '/students';
-	const students = StudentMock.build();
 
 	it('Deve retornar 400 quando não informado um name', async () => {
 		const body = {};
