@@ -3,6 +3,7 @@ import { createExpressServer } from '../../../src/express.server';
 import { StudentMock } from '../../mock/student.mock';
 import { AuthStudent } from '../../types/student.types';
 import { makeToken } from '../make-token';
+import { StudentService } from '../../../src/service';
 
 describe('PUT /students/:id', () => {
 	const server = createExpressServer();
@@ -49,7 +50,7 @@ describe('PUT /students/:id', () => {
 			type: student.type,
 			age: student.age,
 		};
-        
+
 		const payload: AuthStudent = {
 			id: student.id,
 			name: student.name,
@@ -172,9 +173,9 @@ describe('PUT /students/:id', () => {
 		expect(response.body.message).toMatch(/idade.*número/i);
 	});
 
-	it('Deve retornar 400 se o nome se vier, tiver menos de 3 caracteres', async () => {
+	it('Deve retornar 400 se o nome vier, tiver menos de 3 caracteres', async () => {
 		const body = {
-			name: "ab",
+			name: 'ab',
 			password: student.password,
 			type: student.type,
 			age: student.age,
@@ -192,10 +193,100 @@ describe('PUT /students/:id', () => {
 			.put(`${endpoint}/${student.id}`)
 			.set('Authorization', `Bearer ${tokenJWT}`)
 			.send(body);
-		console.log('response:', response.body);
 
 		expect(response.status).toBe(400);
 		expect(response.body.success).toBeFalsy();
 		expect(response.body.message).toMatch(/nome.*caracteres/i);
+	});
+
+	it('Deve retornar 400 se a senha vier, tiver menos de 4 caracteres', async () => {
+		const body = {
+			name: student.name,
+			password: '123',
+			type: student.type,
+			age: student.age,
+		};
+
+		const payload: AuthStudent = {
+			id: student.id,
+			name: student.name,
+			email: student.email,
+			type: student.type,
+		};
+		const tokenJWT = makeToken(payload);
+
+		const response = await supertest(server)
+			.put(`${endpoint}/${student.id}`)
+			.set('Authorization', `Bearer ${tokenJWT}`)
+			.send(body);
+
+		expect(response.status).toBe(400);
+		expect(response.body.success).toBeFalsy();
+		expect(response.body.message).toMatch(/senha.*caracteres/i);
+	});
+
+	it('Deve retornar o estudante atualizado quando informado um ID do estudante válido e um Body válido', async () => {
+		const body = {
+			name: student.name,
+			password: student.password,
+			type: student.type,
+			age: student.age,
+		};
+
+		const payload: AuthStudent = {
+			id: student.id,
+			name: student.name,
+			email: student.email,
+			type: student.type,
+		};
+		const tokenJWT = makeToken(payload);
+
+		jest.spyOn(StudentService.prototype, 'update').mockResolvedValue({
+			success: true,
+			code: 200,
+			message: 'Estudante atualizado com sucesso !',
+			data: {},
+		});
+
+		const response = await supertest(server)
+			.put(`${endpoint}/${student.id}`)
+			.set('Authorization', `Bearer ${tokenJWT}`)
+			.send(body);
+
+		expect(response.status).toBe(200);
+		expect(response.body.success).toBeTruthy();
+		expect(response.body.message).toMatch(/estudante.*sucesso/i);
+	});
+
+	it('Deve retornar 500 quando houver um erro', async () => {
+		const body = {
+			name: student.name,
+			password: student.password,
+			type: student.type,
+			age: student.age,
+		};
+
+		const payload: AuthStudent = {
+			id: student.id,
+			name: student.name,
+			email: student.email,
+			type: student.type,
+		};
+		const tokenJWT = makeToken(payload);
+
+		jest
+			.spyOn(StudentService.prototype, 'update')
+			.mockRejectedValue(new Error('Exceção !!!'));
+
+		const response = await supertest(server)
+			.put(`${endpoint}/${student.id}`)
+			.set('Authorization', `Bearer ${tokenJWT}`)
+			.send(body);
+
+		expect(response.statusCode).toBe(500);
+		expect(response.body).toEqual({
+			success: false,
+			message: 'Erro no servidor: Exceção !!!',
+		});
 	});
 });
