@@ -42,7 +42,7 @@ export class AssessmentController {
 			res.status(code).json(response);
 		} catch (error: any) {
 			res.status(500).json({
-				ok: false,
+				success: false,
 				message: `Erro do servidor: ${error.message}`,
 			});
 		}
@@ -59,7 +59,7 @@ export class AssessmentController {
 			res.status(code).json(response);
 		} catch (error: any) {
 			res.status(500).json({
-				ok: false,
+				success: false,
 				message: `Erro do servidor: ${error.message}`,
 			});
 		}
@@ -78,7 +78,7 @@ export class AssessmentController {
 			res.status(code).json(response);
 		} catch (error: any) {
 			res.status(500).json({
-				ok: false,
+				success: false,
 				message: `Erro do servidor: ${error.message}`,
 			});
 		}
@@ -95,7 +95,7 @@ export class AssessmentController {
 			res.status(code).json(response);
 		} catch (error: any) {
 			res.status(500).json({
-				ok: false,
+				success: false,
 				message: `Erro do servidor: ${error.message}`,
 			});
 		}
