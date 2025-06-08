@@ -83,7 +83,7 @@ export class CreateAssessmentMiddleware {
 			return;
 		}
 
-		if (studentId && typeof studentId !== 'string' && !regexUuid.test(studentId)) {
+		if (studentId && (typeof studentId !== 'string' || !regexUuid.test(studentId))) {
 			res.status(400).json({
 				success: false,
 				message: 'Identificador studentId precisa ser um UUID!',

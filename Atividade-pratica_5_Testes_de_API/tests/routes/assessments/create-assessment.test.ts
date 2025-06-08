@@ -1,9 +1,10 @@
 import supertest from 'supertest';
 import { createExpressServer } from '../../../src/express.server';
+import { AssessmentService } from '../../../src/service';
+import { AssessmentMock } from '../../mock/assessments.mock';
+import { StudentMock } from '../../mock/student.mock';
 import { AuthStudent } from '../../types/student.types';
 import { makeToken } from '../make-token';
-import { StudentMock } from '../../mock/student.mock';
-import { AssessmentMock } from '../../mock/assessments.mock';
 
 describe('POST /assessments', () => {
 	const server = createExpressServer();
@@ -182,9 +183,9 @@ describe('POST /assessments', () => {
 			type: studentType.type,
 		};
 		const body = {
-			title: "ab",
+			title: 'ab',
 			description: assessment.description,
-			grade: assessment.grade,
+			grade: Number(assessment.grade),
 		};
 		const tokenJWT = makeToken(payload);
 
@@ -196,5 +197,121 @@ describe('POST /assessments', () => {
 		expect(response.status).toBe(400);
 		expect(response.body.success).toBeFalsy();
 		expect(response.body.message).toMatch(/titulo.*caracteres/i);
+	});
+
+	it('Deve retornar 400 quando a descrição se vier, tiver menos de 5 caracteres', async () => {
+		const studentType = StudentMock.build({ type: 'M' });
+		const payload: AuthStudent = {
+			id: student.id,
+			name: student.name,
+			email: student.email,
+			type: studentType.type,
+		};
+		const body = {
+			title: assessment.title,
+			description: 'abcd',
+			grade: Number(assessment.grade),
+		};
+		const tokenJWT = makeToken(payload);
+
+		const response = await supertest(server)
+			.post(endpoint)
+			.set('Authorization', `Bearer ${tokenJWT}`)
+			.send(body);
+
+		expect(response.status).toBe(400);
+		expect(response.body.success).toBeFalsy();
+		expect(response.body.message).toMatch(/descrição.*caracteres/i);
+	});
+
+	it('Deve retornar 400 quando o Id do Estudante quando vier, for diferente de uma string ou de um UUID', async () => {
+		const studentType = StudentMock.build({ type: 'M' });
+		const payload: AuthStudent = {
+			id: student.id,
+			name: student.name,
+			email: student.email,
+			type: studentType.type,
+		};
+		const body = {
+			title: assessment.title,
+			description: assessment.description,
+			grade: Number(assessment.grade),
+			studentId: 'any_Id',
+		};
+		const tokenJWT = makeToken(payload);
+
+		const response = await supertest(server)
+			.post(endpoint)
+			.set('Authorization', `Bearer ${tokenJWT}`)
+			.send(body);
+
+		expect(response.status).toBe(400);
+		expect(response.body.success).toBeFalsy();
+		expect(response.body.message).toMatch(/identificador.*uuid/i);
+	});
+
+	it('Deve retornar uma avaliação criada quando informado um body válido', async () => {
+		const studentType = StudentMock.build({ type: 'M' });
+		const payload: AuthStudent = {
+			id: student.id,
+			name: student.name,
+			email: student.email,
+			type: studentType.type,
+		};
+		const body = {
+			title: assessment.title,
+			description: assessment.description,
+			grade: Number(assessment.grade),
+			studentId: student.id,
+		};
+		const tokenJWT = makeToken(payload);
+
+		jest.spyOn(AssessmentService.prototype, 'create').mockResolvedValue({
+			success: true,
+			code: 201,
+			message: 'Avaliação criada com sucesso !',
+			data: {},
+		});
+
+		const response = await supertest(server)
+			.post(endpoint)
+			.set('Authorization', `Bearer ${tokenJWT}`)
+			.send(body);
+
+		expect(response.status).toBe(201);
+		expect(response.body.success).toBeTruthy();
+		expect(response.body.message).toMatch(/avaliação.*sucesso/i);
+	});
+
+	it('Deve retornar 500 quando houver um erro', async () => {
+		const studentType = StudentMock.build({ type: 'M' });
+		const payload: AuthStudent = {
+			id: student.id,
+			name: student.name,
+			email: student.email,
+			type: studentType.type,
+		};
+		const body = {
+			title: assessment.title,
+			description: assessment.description,
+			grade: Number(assessment.grade),
+			studentId: student.id,
+		};
+		const tokenJWT = makeToken(payload);
+
+		jest
+			.spyOn(AssessmentService.prototype, 'create')
+			.mockRejectedValue(new Error('Exceção !!!'));
+
+		const response = await supertest(server)
+			.post(endpoint)
+			.set('Authorization', `Bearer ${tokenJWT}`)
+			.send(body);
+
+		expect(response.statusCode).toBe(500);
+		expect(response.body).toEqual({
+			success: false,
+			message: 'Erro no servidor: Exceção !!!',
+		});
 	});
 });
