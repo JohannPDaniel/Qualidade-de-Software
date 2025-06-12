@@ -68,7 +68,7 @@ export class AssessmentController {
 		try {
 			const { id } = req.params;
 			const studentLogged = req.authStudent;
-
+			
 			const { title, description, grade } = req.body;
 
 			const service = new AssessmentService();
